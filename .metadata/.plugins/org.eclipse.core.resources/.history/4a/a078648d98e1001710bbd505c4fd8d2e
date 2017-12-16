@@ -1,0 +1,15 @@
+package Lecture1;
+
+public class ClientSegmentTree {
+
+	public static void main(String[] args) {
+		
+		int[] arr = {2, 5, 7, 8, -2, 0, 6, 3};
+		
+		SegmentTree st = new SegmentTree(arr);
+		st.display();
+		
+		st.query(2, 6);
+	}
+
+}

@@ -1,0 +1,68 @@
+package Lecture1;
+
+public class SegmentTree {
+	
+	private class Node {
+		int data;
+		Node left;
+		Node right;
+		int startIndex;
+		int endIndex;
+	}
+	
+	private Node root;
+	
+	public SegmentTree(int[] arr){
+		this.root = this.construct(arr, 0, arr.length - 1);
+	}
+	
+	private Node construct(int[] arr, int lo, int hi){
+		if(lo == hi){
+			Node returnNode = new Node();
+			returnNode.left = null;
+			returnNode.right = null;
+			returnNode.startIndex = lo;
+			returnNode.endIndex = hi;
+			returnNode.data = arr[lo];
+			return returnNode;
+		}
+		
+		Node node = new Node();
+		
+		int mid = (lo + hi) / 2;
+		
+		node.startIndex = lo;
+		node.endIndex = hi;
+		
+		node.left = construct(arr, lo, mid);
+		node.right = construct(arr, mid + 1, hi);
+		
+		node.data = node.left.data + node.right.data;
+		
+		return node;
+	}
+	
+	public void display(){
+		this.display(this.root);
+	}
+	
+	private void display(Node node){
+		if(node.left != null && node.right != null){
+			
+			System.out.println(node.left.data + " (" +
+		node.left.startIndex + "," + node.left.endIndex +  ") => " + 
+		node.data + " (" + node.startIndex + "," + node.endIndex + 
+					 ") <= " + node.right.data + " ("
+		+ node.right.startIndex + "," + node.right.endIndex + ")");
+			
+			this.display(node.left);
+			this.display(node.right);
+		} else {
+			System.out.println("END -> " + node.data + " <- END");
+		}
+	}
+	
+	public void 
+
+	
+}

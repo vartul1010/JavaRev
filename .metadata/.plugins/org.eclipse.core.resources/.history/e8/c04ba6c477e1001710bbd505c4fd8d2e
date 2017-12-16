@@ -1,0 +1,46 @@
+package Lecture1;
+
+public class lightQuestion {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		int[] lights = {30, 25, 35};
+		
+		int minTime = Integer.MAX_VALUE;
+		for(int light: lights){
+			if(light < minTime){
+				minTime = light;
+			}
+		}
+		
+		int maxTime = Integer.MIN_VALUE;
+		for(int light: lights){
+			if(light > minTime){
+				maxTime = light;
+			}
+		}
+		
+		int time = 2*minTime;
+		
+		while(allLightGreen(lights, time) != true){
+			time = time + maxTime;
+		}
+		
+		System.out.println(time);
+
+	}
+	
+	public static boolean allLightGreen(int[] lights, int time){
+		boolean status = true;
+		for(int i=0; i<lights.length; i++){
+			int rem = time % (2*lights[i]);
+			if(rem >= lights[i] - 5){
+				status = false;
+				break;
+			}
+		}
+		return status;
+	}
+}
+

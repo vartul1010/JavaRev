@@ -1,0 +1,23 @@
+package Lecture1;
+
+public class ClientSegmentTree {
+
+	public static void main(String[] args) {
+		
+		int[] arr = {2, 5, 7, 8, -2, 0, 6, 3};
+		
+		SegmentTree st = new SegmentTree(arr);
+		st.display();
+		
+		System.out.println();
+		System.out.println();
+		
+		st.query(2, 6);
+		
+		st.update(3, 2);
+		st.update(4, 2);
+		
+		st.query(2, 6);
+	}
+
+}
