@@ -1,0 +1,77 @@
+package Lecture2;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class IntroHashMap {
+
+	public static void main(String[] args) {
+		
+		ArrayList<Integer> one = new ArrayList<>();
+		one.add(1);
+		one.add(1);
+		one.add(2);
+		one.add(2);
+		one.add(2);
+		one.add(3);
+		one.add(5);
+		
+		ArrayList<Integer> two = new ArrayList<>();
+		two.add(1);
+		two.add(1);
+		two.add(1);
+		two.add(2);
+		two.add(2);
+		two.add(4);
+		two.add(5);
+		
+		ArrayList<Integer> rv2 = new ArrayList<>();
+		ArrayList<Integer> rv1 = new ArrayList<>();
+		
+		HashMap<Integer, Integer> first = new HashMap<>();
+		HashMap<Integer, Boolean> second = new HashMap<>();
+		
+		for(int i=0; i<one.size(); i++){
+			second.put(one.get(i), false);
+		}
+		
+		for(int i=0; i<two.size(); i++){
+			if(second.containsKey(two.get(i))){
+				rv2.add(two.get(i));
+				second.remove(two.get(i));
+			}
+		}
+		
+		System.out.println(rv2);
+		
+		for(int i=0; i<one.size(); i++){
+			if(first.containsKey(one.get(i))){
+				int temp = first.get(one.get(i));
+				temp++;
+				first.put(one.get(i), temp);
+			} else {
+				first.put(one.get(i), 1);
+			}
+		}
+		
+		for(int i=0; i<two.size(); i++){
+			if(first.containsKey(two.get(i))){
+				if(first.get(two.get(i))>0){
+					rv1.add(two.get(i));
+					int temp = first.get(two.get(i));
+					temp--;
+					first.put(two.get(i), temp);
+				} else {
+					
+				}
+			}
+		}
+		
+		
+		
+		System.out.println(rv1);
+		
+	}
+		
+
+}
