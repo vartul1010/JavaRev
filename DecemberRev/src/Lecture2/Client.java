@@ -3,9 +3,9 @@ package Lecture2;
 public class Client {
 
 	public static void main(String[] args) {
-		
+
 		Graphs gph = new Graphs();
-		
+
 		gph.addVertex("A");
 		gph.addVertex("B");
 		gph.addVertex("C");
@@ -13,7 +13,7 @@ public class Client {
 		gph.addVertex("E");
 		gph.addVertex("F");
 		gph.addVertex("G");
-		
+
 		gph.addEdge("A", "B", 10);
 		gph.addEdge("A", "D", 40);
 		gph.addEdge("B", "C", 10);
@@ -22,9 +22,47 @@ public class Client {
 		gph.addEdge("E", "F", 3);
 		gph.addEdge("F", "G", 3);
 		gph.addEdge("G", "E", 8);
-		
+
 		gph.display();
 
+		System.out.println();
+		System.out.println(gph.hasPath("A", "G"));
+
+		System.out.println();
+		gph.printAllPaths("A", "G");
+
+		System.out.println();
+		gph.preOrder();
+
+		System.out.println();
+		gph.postOrder();
+
+		System.out.println();
+		System.out.println(gph.breadthFirstIterative("A", "G"));
+
+		System.out.println();
+		System.out.println(gph.depthFirstIterative("A", "G"));
+
+		System.out.println();
+		System.out.println(gph.isConnected());
+
+		System.out.println();
+		gph.breadthFirstTraversal();
+
+		System.out.println();
+		gph.depthFirstTraversal();
+
+		System.out.println();
+		System.out.println(gph.isCyclic());
+
+		System.out.println();
+		System.out.println(gph.isBipartite());
+
+		System.out.println();
+		System.out.println(gph.getConnectedComponents());
+
+		System.out.println();
+		System.out.println(gph.djikstra("A"));
 	}
 
 }

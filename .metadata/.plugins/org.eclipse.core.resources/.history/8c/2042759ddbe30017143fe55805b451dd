@@ -1,0 +1,59 @@
+package Lecture2;
+
+public class Client {
+
+	public static void main(String[] args) {
+
+		Graphs gph = new Graphs();
+
+		gph.addVertex("A");
+		gph.addVertex("B");
+		gph.addVertex("C");
+		gph.addVertex("D");
+		gph.addVertex("E");
+		gph.addVertex("F");
+		gph.addVertex("G");
+
+		gph.addEdge("A", "B", 10);
+		gph.addEdge("A", "D", 40);
+		gph.addEdge("B", "C", 10);
+		gph.addEdge("C", "D", 10);
+		gph.addEdge("D", "E", 2);
+		gph.addEdge("E", "F", 3);
+		gph.addEdge("F", "G", 3);
+		gph.addEdge("G", "E", 8);
+
+		gph.display();
+
+		System.out.println();
+		System.out.println(gph.hasPath("A", "G"));
+
+		System.out.println();
+		gph.printAllPaths("A", "G");
+
+		System.out.println();
+		gph.preOrder();
+
+		System.out.println();
+		gph.postOrder();
+
+		System.out.println();
+		System.out.println(gph.breadthFirstIterative("A", "G"));
+
+		System.out.println();
+		System.out.println(gph.depthFirstIterative("A", "G"));
+		
+		System.out.println();
+		System.out.println(gph.isConnected());
+		
+		gph.removeEdge("D", "E");
+		
+		System.out.println();
+		gph.breadthFirstTraversal();
+		
+		System.out.println();
+		gph.depthFirstTraversal();
+
+	}
+
+}

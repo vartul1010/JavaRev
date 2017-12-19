@@ -1,0 +1,328 @@
+package Lecture2;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+
+public class Graphs {
+
+	private class Vertex {
+		HashMap<String, Integer> nbrs = new HashMap<>();
+	}
+
+	HashMap<String, Vertex> vces = new HashMap<>();
+
+	public int numVertices() {
+		return vces.size();
+	}
+
+	public boolean containsVertex(String vname) {
+		return vces.containsKey(vname);
+	}
+
+	public void addVertex(String vname) {
+		if (containsVertex(vname)) {
+			return;
+		} else {
+			Vertex vertex = new Vertex();
+			vces.put(vname, vertex);
+		}
+	}
+
+	public void removeVertex(String vname) {
+		Vertex vremove = vces.get(vname);
+
+		ArrayList<String> vtx = new ArrayList<>(vremove.nbrs.keySet());
+
+		for (int i = 0; i < vtx.size(); i++) {
+			Vertex v = vces.get(vtx.get(i));
+			v.nbrs.remove(vname);
+		}
+
+		vces.remove(vname);
+	}
+
+	public int numEdges() {
+		int num = 0;
+
+		ArrayList<String> vtx = new ArrayList<>(vces.keySet());
+
+		for (int i = 0; i < vtx.size(); i++) {
+			Vertex v = vces.get(vtx.get(i));
+			num += v.nbrs.size();
+		}
+
+		return num / 2;
+	}
+
+	public boolean containsEdge(String v1name, String v2name) {
+		Vertex vtx1 = vces.get(v1name);
+		Vertex vtx2 = vces.get(v2name);
+
+		if (vtx1 == null || vtx2 == null) {
+			return false;
+		}
+
+		return vtx1.nbrs.containsKey(v2name);
+	}
+
+	public void addEdge(String v1name, String v2name, int weight) {
+		Vertex vtx1 = vces.get(v1name);
+		Vertex vtx2 = vces.get(v2name);
+
+		if (vtx1 == null || vtx2 == null) {
+			return;
+		}
+
+		vtx1.nbrs.put(v2name, weight);
+		vtx2.nbrs.put(v1name, weight);
+	}
+
+	public void removeEdge(String v1name, String v2name) {
+		Vertex vtx1 = vces.get(v1name);
+		Vertex vtx2 = vces.get(v2name);
+
+		if (vtx1 == null || vtx2 == null) {
+			return;
+		}
+
+		vtx1.nbrs.remove(v2name);
+		vtx2.nbrs.remove(v1name);
+	}
+
+	public void display() {
+		ArrayList<String> vertex = new ArrayList<>(vces.keySet());
+
+		for (String v : vertex) {
+			Vertex nb = vces.get(v);
+			System.out.println(v + " " + nb.nbrs);
+		}
+	}
+
+	public boolean hasPath(String v1name, String v2name) {
+		HashMap<String, Boolean> hasPassed = new HashMap<>();
+		return this.hasPath(v1name, v2name, hasPassed, "");
+	}
+
+	private boolean hasPath(String v1name, String v2name, HashMap<String, Boolean> hasPassed, String pathSoFar) {
+		hasPassed.put(v1name, true);
+		pathSoFar += v1name + " => ";
+
+		if (containsEdge(v1name, v2name)) {
+			pathSoFar += v2name;
+			System.out.println(pathSoFar);
+			return true;
+		}
+
+		Vertex vtx = vces.get(v1name);
+
+		ArrayList<String> nbrs = new ArrayList<>(vtx.nbrs.keySet());
+
+		for (String nbr : nbrs) {
+			if (hasPassed.containsKey(nbr)) {
+
+			} else {
+				if (hasPath(nbr, v2name, hasPassed, pathSoFar)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	public void printAllPaths(String v1name, String v2name) {
+		HashMap<String, Boolean> path = new HashMap<>();
+		this.printAllPaths(v1name, v2name, path, "");
+	}
+
+	private void printAllPaths(String v1name, String v2name, HashMap<String, Boolean> hasPassed, String pathSoFar) {
+		if (hasPassed.containsKey(v1name)) {
+			return;
+		}
+
+		if (v1name == v2name) {
+			pathSoFar += v2name;
+			System.out.println(pathSoFar);
+			hasPassed.remove(v1name);
+			return;
+		}
+
+		hasPassed.put(v1name, true);
+		pathSoFar += v1name + " => ";
+
+		Vertex vtx = vces.get(v1name);
+
+		ArrayList<String> nbrs = new ArrayList<>(vtx.nbrs.keySet());
+
+		for (String nbr : nbrs) {
+			printAllPaths(nbr, v2name, hasPassed, pathSoFar);
+		}
+
+		hasPassed.remove(v1name);
+	}
+
+	public void preOrder() {
+		ArrayList<String> al = new ArrayList<>(vces.keySet());
+		this.preOrder(al.get(0), al.get(0), new HashMap<String, Boolean>());
+	}
+
+	private void preOrder(String vname, String path, HashMap<String, Boolean> processed) {
+		if (processed.containsKey(vname)) {
+			return;
+		}
+
+		processed.put(vname, true);
+
+		System.out.println(vname + " via " + path);
+
+		Vertex vtx = vces.get(vname);
+
+		ArrayList<String> nbrs = new ArrayList<>(vtx.nbrs.keySet());
+
+		for (String nbr : nbrs) {
+			preOrder(nbr, path + nbr, processed);
+		}
+
+		processed.remove(vname);
+	}
+
+	public void postOrder() {
+		ArrayList<String> al = new ArrayList<>(vces.keySet());
+		this.postOrder(al.get(0), al.get(0), new HashMap<String, Boolean>());
+	}
+
+	private void postOrder(String vname, String path, HashMap<String, Boolean> processed) {
+		if (processed.containsKey(vname)) {
+			return;
+		}
+
+		processed.put(vname, true);
+
+		Vertex vtx = vces.get(vname);
+
+		ArrayList<String> nbrs = new ArrayList<>(vtx.nbrs.keySet());
+
+		for (String nbr : nbrs) {
+			postOrder(nbr, path + nbr, processed);
+		}
+
+		System.out.println(vname + " via " + path);
+		processed.remove(vname);
+	}
+
+	private class Pair {
+		String name;
+		String pathSoFar;
+	}
+
+	public boolean breadthFirstIterative(String v1name, String v2name) {
+
+		HashMap<String, Boolean> processed = new HashMap<String, Boolean>();
+		LinkedList<Pair> queue = new LinkedList<>();
+
+		Pair p = new Pair();
+		p.name = v1name;
+		p.pathSoFar = v1name;
+
+		queue.addLast(p);
+
+		while (queue.size() > 0) {
+			Pair rp = queue.removeFirst();
+			processed.put(rp.name, true);
+			System.out.println(rp.name + " via " + rp.pathSoFar);
+			if (rp.name.equals(v2name)) {
+				return true;
+			}
+
+			ArrayList<String> nbrnames = new ArrayList<>(vces.get(rp.name).nbrs.keySet());
+
+			for (String nbr : nbrnames) {
+				if (processed.containsKey(nbr)) {
+
+				} else {
+					Pair np = new Pair();
+					np.name = nbr;
+					np.pathSoFar = rp.pathSoFar + nbr;
+					queue.addLast(np);
+				}
+			}
+
+		}
+		return false;
+	}
+
+	public boolean depthFirstIterative(String v1name, String v2name) {
+
+		HashMap<String, Boolean> processed = new HashMap<String, Boolean>();
+		LinkedList<Pair> stack = new LinkedList<>();
+
+		Pair p = new Pair();
+		p.name = v1name;
+		p.pathSoFar = v1name;
+
+		stack.addFirst(p);
+
+		while (stack.size() > 0) {
+			Pair rp = stack.removeFirst();
+			processed.put(rp.name, true);
+			System.out.println(rp.name + " via " + rp.pathSoFar);
+			if (rp.name.equals(v2name)) {
+				return true;
+			}
+
+			ArrayList<String> nbrnames = new ArrayList<>(vces.get(rp.name).nbrs.keySet());
+
+			for (String nbr : nbrnames) {
+				if (processed.containsKey(nbr)) {
+
+				} else {
+					Pair np = new Pair();
+					np.name = nbr;
+					np.pathSoFar = rp.pathSoFar + nbr;
+					stack.addFirst(np);
+				}
+			}
+
+		}
+
+		return false;
+	}
+	
+	public boolean isConnected(){
+		
+		HashMap<String, Boolean> processed = new HashMap<String, Boolean>();
+		LinkedList<Pair> queue = new LinkedList<>();
+
+		ArrayList<String> al = new ArrayList<>(vces.keySet());
+		
+		Pair p = new Pair();
+		p.name = al.get(0);
+		p.pathSoFar = al.get(0);
+
+		queue.addLast(p);
+
+		while (queue.size() > 0) {
+			Pair rp = queue.removeFirst();
+			processed.put(rp.name, true);
+
+			ArrayList<String> nbrnames = new ArrayList<>(vces.get(rp.name).nbrs.keySet());
+
+			for (String nbr : nbrnames) {
+				if (processed.containsKey(nbr)) {
+
+				} else {
+					Pair np = new Pair();
+					np.name = nbr;
+					np.pathSoFar = rp.pathSoFar + nbr;
+					queue.addLast(np);
+				}
+			}
+
+		}
+		
+		return al.size() == processed.size(); 
+	}
+
+	
+}

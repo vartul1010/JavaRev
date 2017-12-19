@@ -1,0 +1,131 @@
+package Lecture2;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class Graphs {
+
+	private class Vertex {
+		HashMap<String, Integer> nbrs = new HashMap<>();
+	}
+
+	HashMap<String, Vertex> vces = new HashMap<>();
+
+	public int numVertices() {
+		return vces.size();
+	}
+
+	public boolean containsVertex(String vname) {
+		return vces.containsKey(vname);
+	}
+
+	public void addVertex(String vname) {
+		if (containsVertex(vname)) {
+			return;
+		} else {
+			Vertex vertex = new Vertex();
+			vces.put(vname, vertex);
+		}
+	}
+
+	public void removeVertex(String vname) {
+		Vertex vremove = vces.get(vname);
+
+		ArrayList<String> vtx = new ArrayList<>(vremove.nbrs.keySet());
+
+		for (int i = 0; i < vtx.size(); i++) {
+			Vertex v = vces.get(vtx.get(i));
+			v.nbrs.remove(vname);
+		}
+
+		vces.remove(vname);
+	}
+
+	public int numEdges() {
+		int num = 0;
+
+		ArrayList<String> vtx = new ArrayList<>(vces.keySet());
+
+		for (int i = 0; i < vtx.size(); i++) {
+			Vertex v = vces.get(vtx.get(i));
+			num += v.nbrs.size();
+		}
+
+		return num / 2;
+	}
+
+	public boolean containsEdge(String v1name, String v2name) {
+		Vertex vtx1 = vces.get(v1name);
+		Vertex vtx2 = vces.get(v2name);
+
+		if (vtx1 == null || vtx2 == null) {
+			return false;
+		}
+
+		return vtx1.nbrs.containsKey(v2name);
+	}
+
+	public void addEdge(String v1name, String v2name, int weight) {
+		Vertex vtx1 = vces.get(v1name);
+		Vertex vtx2 = vces.get(v2name);
+
+		if (vtx1 == null || vtx2 == null) {
+			return;
+		}
+
+		vtx1.nbrs.put(v2name, weight);
+		vtx2.nbrs.put(v1name, weight);
+	}
+
+	public void removeEdge(String v1name, String v2name) {
+		Vertex vtx1 = vces.get(v1name);
+		Vertex vtx2 = vces.get(v2name);
+
+		if (vtx1 == null || vtx2 == null) {
+			return;
+		}
+
+		vtx1.nbrs.remove(v2name);
+		vtx2.nbrs.remove(v1name);
+	}
+
+	public void display() {
+		ArrayList<String> vertex = new ArrayList<>(vces.keySet());
+
+		for (String v : vertex) {
+			Vertex nb = vces.get(v);
+			System.out.println(v + " " + nb.nbrs);
+		}
+	}
+
+	public boolean hasPath(String v1name, String v2name) {
+		HashMap<String, Boolean> hasPassed = new HashMap<>();
+		return this.hasPath(v1name, v2name, hasPassed);
+	}
+
+	private boolean hasPath(String v1name, String v2name, HashMap<String, Boolean> hasPassed) {
+		if (containsEdge(v1name, v2name)) {
+			return true;
+		}
+
+		hasPassed.put(v1name, true);
+
+		Vertex vtx = vces.get(v1name);
+
+		ArrayList<String> nbrs = new ArrayList<>(vtx.nbrs.keySet());
+
+		for (String nbr : nbrs) {
+			if (hasPassed.containsKey(nbr)) {
+
+			} else {
+				if (hasPath(nbr, v2name, hasPassed)){
+					return true;
+				}
+			}
+		}
+
+		return false;
+
+	}
+
+}

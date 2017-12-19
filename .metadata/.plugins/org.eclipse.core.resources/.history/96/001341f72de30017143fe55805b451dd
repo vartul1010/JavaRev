@@ -1,0 +1,115 @@
+package Lecture2;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+
+public class IntroHashMap {
+
+	public static void main(String[] args) {
+
+		ArrayList<Integer> one = new ArrayList<>();
+		one.add(1);
+		one.add(1);
+		one.add(2);
+		one.add(2);
+		one.add(2);
+		one.add(3);
+		one.add(5);
+
+		ArrayList<Integer> two = new ArrayList<>();
+		two.add(1);
+		two.add(1);
+		two.add(1);
+		two.add(2);
+		two.add(2);
+		two.add(4);
+		two.add(5);
+
+		// GCS1
+		ArrayList<Integer> rv2 = new ArrayList<>();
+		HashMap<Integer, Boolean> second = new HashMap<>();
+
+		for (int i = 0; i < one.size(); i++) {
+			second.put(one.get(i), false);
+		}
+
+		for (int i = 0; i < two.size(); i++) {
+			if (second.containsKey(two.get(i))) {
+				rv2.add(two.get(i));
+				second.remove(two.get(i));
+			}
+		}
+
+		System.out.println(rv2);
+
+		// GCS2
+		HashMap<Integer, Integer> first = new HashMap<>();
+		ArrayList<Integer> rv1 = new ArrayList<>();
+
+		for (int i = 0; i < one.size(); i++) {
+			if (first.containsKey(one.get(i))) {
+				int temp = first.get(one.get(i));
+				temp++;
+				first.put(one.get(i), temp);
+			} else {
+				first.put(one.get(i), 1);
+			}
+		}
+
+		for (int i = 0; i < two.size(); i++) {
+			if (first.containsKey(two.get(i))) {
+				if (first.get(two.get(i)) > 0) {
+					rv1.add(two.get(i));
+					int temp = first.get(two.get(i));
+					temp--;
+					first.put(two.get(i), temp);
+				}
+			}
+		}
+
+		System.out.println(rv1);
+
+		ArrayList<Integer> al = new ArrayList<>(Arrays.asList(15, 13, 23, 21, 19, 11, 16, 14));
+		System.out.println(getLongestSequence(al));
+	}
+
+	public static ArrayList<Integer> getLongestSequence(ArrayList<Integer> al) {
+		ArrayList<Integer> rv = new ArrayList<>();
+		HashMap<Integer, Boolean> hm = new HashMap<>();
+
+		for (int i = 0; i < al.size(); i++) {
+			hm.put(al.get(i), false);
+		}
+
+		for (int i = 0; i < al.size(); i++) {
+			if (hm.containsKey(al.get(i) - 1)) {
+
+			} else {
+				hm.put(al.get(i), true);
+			}
+		}
+
+		int longestSequence = 0;
+		int startPosition = 0;
+		for (int i = 0; i < al.size(); i++) {
+			if (hm.get(al.get(i)) == true) {
+				int seqLength = 0;
+				while (hm.containsKey(al.get(i) + seqLength)) {
+					seqLength++;
+				}
+				if (seqLength > longestSequence) {
+					longestSequence = seqLength;
+					startPosition = al.get(i);
+				}
+			}
+		}
+
+		for (int i = 0; i < longestSequence; i++) {
+			rv.add(startPosition + i);
+		}
+
+		return rv;
+	}
+
+}
