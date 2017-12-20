@@ -63,6 +63,15 @@ public class Client {
 
 		System.out.println();
 		System.out.println(gph.djikstra("A"));
+
+		System.out.println();
+		Graphs mst = gph.Prims();
+		mst.display();
+
+		System.out.println();
+		Graphs g = gph.Kruskal();
+		g.display();
+
 	}
 
 }

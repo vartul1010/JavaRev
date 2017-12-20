@@ -619,4 +619,156 @@ public class Graphs {
 		return rv;
 	}
 
+	private class PrimsPair implements Comparable<PrimsPair> {
+		String name;
+		String parentName;
+		int costSoFar;
+
+		@Override
+		public int compareTo(PrimsPair primsPair) {
+			return this.costSoFar - primsPair.costSoFar;
+		}
+	}
+
+	public Graphs Prims() {
+
+		Graphs gph = new Graphs();
+
+		HashMap<String, PrimsPair> hashMap = new HashMap<String, PrimsPair>();
+		PriorityQueue<PrimsPair> heap = new PriorityQueue<>();
+
+		ArrayList<String> vnames = new ArrayList<>(vces.keySet());
+
+		for (String vname : vnames) {
+			PrimsPair p = new PrimsPair();
+			p.name = vname;
+			p.parentName = "";
+			p.costSoFar = Integer.MAX_VALUE;
+
+			heap.add(p);
+			hashMap.put(vname, p);
+		}
+
+		while (heap.size() > 0) {
+			PrimsPair rp = heap.remove();
+
+			if (rp.parentName.equals("")) {
+				gph.addVertex(rp.name);
+			} else {
+				gph.addVertex(rp.name);
+				gph.addEdge(rp.name, rp.parentName, rp.costSoFar);
+			}
+
+			ArrayList<String> nbrs = new ArrayList<>(vces.get(rp.name).nbrs.keySet());
+
+			for (String nbr : nbrs) {
+				PrimsPair np = hashMap.get(nbr);
+				int oldCost = np.costSoFar;
+				int newCost = vces.get(np.name).nbrs.get(rp.name);
+
+				if (oldCost > newCost) {
+					np.parentName = rp.name;
+					np.costSoFar = newCost;
+
+					heap.remove(np);
+					heap.add(np);
+				}
+			}
+		}
+
+		return gph;
+	}
+
+	private class KruskalPair implements Comparable<KruskalPair> {
+		String v1name;
+		String v2name;
+		int weight;
+
+		@Override
+		public int compareTo(KruskalPair o) {
+			return this.weight - o.weight;
+		}
+	}
+
+	private class Cluster {
+		String name;
+		Cluster parent;
+		int size;
+
+		public Cluster(String data) {
+			this.name = data;
+			this.parent = this;
+			this.size = 1;
+		}
+
+		public Cluster find() {
+			if (this.parent == this) {
+				return this;
+			} else {
+				return this.parent.find();
+			}
+		}
+
+		public void merge(Cluster other) {
+			if (this.size > other.size) {
+				other.parent = this;
+				this.size += other.size;
+			} else {
+				this.parent = other;
+				other.size += this.size;
+			}
+		}
+	}
+
+	public Graphs Kruskal() {
+
+		Graphs rv = new Graphs();
+
+		HashMap<String, Cluster> partition = new HashMap<String, Cluster>();
+		PriorityQueue<KruskalPair> heap = new PriorityQueue<>();
+
+		ArrayList<String> vnames = new ArrayList<>(vces.keySet());
+
+		for (String vname : vnames) {
+			Cluster c = new Cluster(vname);
+			partition.put(vname, c);
+
+			ArrayList<String> nbrs = new ArrayList<>(vces.get(vname).nbrs.keySet());
+
+			for (String nbr : nbrs) {
+
+				if (partition.containsKey(nbr)) {
+					continue;
+				}
+
+				KruskalPair kp = new KruskalPair();
+				kp.v1name = vname;
+				kp.v2name = nbr;
+				kp.weight = vces.get(vname).nbrs.get(nbr);
+				heap.add(kp);
+
+			}
+		}
+
+		while (rv.numEdges() != this.numVertices() - 1) {
+			KruskalPair rp = heap.remove();
+
+			Cluster v1Cluster = partition.get(rp.v1name);
+			Cluster v2Cluster = partition.get(rp.v2name);
+
+			Cluster v1Leader = v1Cluster.find();
+			Cluster v2Leader = v2Cluster.find();
+
+			if (v1Leader != v2Leader) {
+				v1Leader.merge(v2Leader);
+				rv.addVertex(rp.v1name);
+				rv.addVertex(rp.v2name);
+				rv.addEdge(rp.v1name, rp.v2name, rp.weight);
+			}
+
+		}
+
+		return rv;
+	}
+
 }
